@@ -1,0 +1,9 @@
+ubuntu@kitcat:~$ tail ~/.bashrc
+source /opt/ros/kinetic/setup.bash
+source /home/ubuntu/catkin_ws/devel/setup.bash
+
+josep@josep-Inspiron-7720:~$ tail ~/.bashrc
+source /opt/ros/melodic/setup.bash
+source ~/catkin_ws/devel/setup.bash
+export ROS_MASTER_URI=http://kitcat.local:11311
+export ROS_IP=`ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | grep -v '127.0.0.1'`

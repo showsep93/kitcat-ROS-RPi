@@ -1,0 +1,5 @@
+https://linuxconfig.org/how-to-enable-disable-firewall-on-ubuntu-18-04-bionic-beaver-linux
+
+https://linuxize.com/post/how-to-disable-firewall-on-ubuntu-18-04/
+
+https://stackoverflow.com/questions/55316801/ros-communication-from-pc-to-raspberrypi
