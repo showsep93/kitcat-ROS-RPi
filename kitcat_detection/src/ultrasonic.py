@@ -22,8 +22,8 @@ float32 range
 """
 
 # Sensor GPIO numbers
-GPIO_TRIGGER    = 5
-GPIO_ECHO       = 6
+GPIO_TRIGGER    = 4
+GPIO_ECHO       = 17
 
 
 # Scans the Kit-Cat's ultrasonic distance sensor in ROS

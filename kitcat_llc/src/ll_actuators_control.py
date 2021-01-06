@@ -83,11 +83,14 @@ class KitCatLowLevelCtrl():
     # Method that combines commands from the user and the ultrasonic sensor to obtains the self.throttle and self.steer attributes; finally it calls the function that will perform the conversion to PWM.
     def compose_movement(self):
         # Only update throttle attribute if the car is receiving the order to move forward, otherwise stick to the user command.
+        
         if self.throttle_cmd > 0:
-            self.throttle = saturate(self.throttle_cmd * self.throttle_avoid, 0, 1)
+            self.throttle = saturate(self.throttle_cmd, 0, 1) * self.throttle_avoid
         else:
             self.throttle = saturate(self.throttle_cmd, -1, 0)
-
+        print(self.throttle)
+        print(self.throttle_cmd)
+        print(self.throttle_avoid)
         # Update steer attribute
         self.steer = self.steer_cmd
         
