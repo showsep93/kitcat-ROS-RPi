@@ -1,0 +1,54 @@
+sudo cp ifupdown.sh /etc/ifplugd/action.d/ifupdown
+
+sudo apt install iw
+
+iwconfig
+journalctl | grep brcmfmac
+
+sudo iw wlan0 set power_save off
+sudo iw reg set ES
+iwconfig
+
+sudo touch /etc/network/if-up.d/powersave_off
+sudo nano /etc/network/if-up.d/powersave_off
+
+--------------->
+#! /bin/sh
+
+set -e
+
+# Don't bother for loopback
+if [ "$IFACE" = lo ]; then
+        exit 0
+fi
+
+# Only run from ifup.
+if [ "$MODE" != start ]; then
+        exit 0
+fi
+
+# Only do it once (skip for inet6).
+if [ "$ADDRFAM" != inet ]; then
+        exit 0
+fi
+
+/sbin/iw dev wlan0 set power_save off
+/sbin/iw reg set ES
+
+exit 0
+<--------------
+
+chmod +x /etc/network/if-up.d/powersave_off
+
+reboot
+iwconfig
+
+
+
+=================================================================
+
+sudo nano /etc/default/keyboard
+
+--------------->
+XKBLAYOUT="es"
+<--------------

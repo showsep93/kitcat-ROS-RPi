@@ -84,9 +84,9 @@ class KitCatLowLevelCtrl():
     def compose_movement(self):
         # Only update throttle attribute if the car is receiving the order to move forward, otherwise stick to the user command.
         if self.throttle_cmd > 0:
-            self.throttle = saturate( self.throttle_cmd * self.throttle_avoid, 0, 1)
+            self.throttle = saturate(self.throttle_cmd * self.throttle_avoid, 0, 1)
         else:
-            self.throttle = self.throttle_cmd
+            self.throttle = saturate(self.throttle_cmd, -1, 0)
 
         # Update steer attribute
         self.steer = self.steer_cmd

@@ -1,0 +1,2 @@
+/opt/ros/kinetic/share/raspicam_node/launch
+/opt/ros/kinetic/share/web_video_server/launch
