@@ -4,6 +4,7 @@ import rospy, time
 
 from i2cpwm_board.msg import Servo, ServoArray
 from geometry_msgs.msg import Twist # native message type from ROS
+from std_msgs.msg import Float64
 
 from servo_convert import *
 
@@ -17,9 +18,9 @@ class KitCatLowLevelCtrl():
 
         # Create an actuator dictionary
         self.actuators = {} 
-        self.actuators['throttle']  = ServoConvert(id=1, center_value=270, range=40)
+        self.actuators['throttle']  = ServoConvert(id=1, center_value=270, range=60)
         self.actuators['steering']  = ServoConvert(id=2, center_value=270, range=140, direction=1) # Positive sign is left
-        self.actuators['accessory']  = ServoConvert(id=3, center_value=270, range=1)
+        self.actuators['accessory']  = ServoConvert(id=3, center_value=215, range=290)
         rospy.loginfo("Servo actuators correctly initialized")
 
         # MESSAGE TYPE
@@ -39,7 +40,11 @@ class KitCatLowLevelCtrl():
 
         # Create the subscriber to topic "/control/cmd_vel" with the callback function "update_from_avoidance"
         self.ros_sub_twist          = rospy.Subscriber("/control/cmd_vel", Twist, self.update_from_avoidance)
-        rospy.loginfo("Subscriber to \"/control/cmd_vel\" corrrectly initialized") 
+        rospy.loginfo("Subscriber to \"/control/cmd_vel\" corrrectly initialized")
+
+        # Create the subscriber to topic "/pet_accessory" with the callback function "update_from_avoidance"
+        self.ros_sub_twist          = rospy.Subscriber("/pet_accessory", Float64, self.update_accessory)
+        rospy.loginfo("Subscriber to \"/pet_accessory\" corrrectly initialized")
 
         # Set a timeout
         self._last_time_cmd_rcv     = time.time()
@@ -47,9 +52,9 @@ class KitCatLowLevelCtrl():
         self._timeout_s             = 3
 
         self.throttle, self.steer = 0.0, 0.0
-
         self.throttle_cmd, self.steer_cmd = 0.0, 0.0
         self.throttle_avoid = 1.0
+        self.pet_acc = 0.0
 
         rospy.loginfo("Initialization for \"kitcat_llc\" complete!")
 
@@ -79,6 +84,9 @@ class KitCatLowLevelCtrl():
         self._last_time_avoid_rcv = time.time()
         self.throttle_avoid       = message.linear.x # Braking coefficient
 
+    def update_accessory(self, message):
+        self.pet_acc       = message.data # Servo accessory position
+
 
     # Method that combines commands from the user and the ultrasonic sensor to obtains the self.throttle and self.steer attributes; finally it calls the function that will perform the conversion to PWM.
     def compose_movement(self):
@@ -88,23 +96,23 @@ class KitCatLowLevelCtrl():
             self.throttle = saturate(self.throttle_cmd, 0, 1) * self.throttle_avoid
         else:
             self.throttle = saturate(self.throttle_cmd, -1, 0)
-        print(self.throttle)
-        print(self.throttle_cmd)
-        print(self.throttle_avoid)
+
         # Update steer attribute
         self.steer = self.steer_cmd
         
         # Call the unitary range to PWM converter
-        self.set_actuators_from_cmdvel(self.throttle, self.steer)
+        self.set_actuators_from_cmdvel(self.throttle, self.steer, self.pet_acc)
 
 
     # From throttle and steering and assuming a range [-1, 1], it updates the dictionary self.actuators and calls the publisher
-    def set_actuators_from_cmdvel(self, throttle, steering):
+    def set_actuators_from_cmdvel(self, throttle, steering, accessory):
         # Converts the Twist message received into servo PWM values
         self.actuators['throttle'].getPWM(throttle)
         self.actuators['steering'].getPWM(steering)
+        self.actuators['accessory'].getPWM(accessory)
         rospy.loginfo("Received cmd throttle = %3.1f" %throttle)
         rospy.loginfo("Received cmd steering = %3.1f" %steering)
+        rospy.loginfo("Received cmd accessory = %3.1f" %accessory)
 
         # Calls the publisher
         self.send_servo_msg()

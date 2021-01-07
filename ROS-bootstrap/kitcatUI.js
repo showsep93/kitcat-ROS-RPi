@@ -1,13 +1,17 @@
 // Global variables
 var twist;
 var cmdVel;
+var float64;
+var petAcc;
 var publishNow = true;
 var kitCatIP;
 var joy;
 var teleop;
+var accSlider;
 var ros;
 var kLinear = 0.03;
 var kAngular = 0.015;
+
 
 // PUBLISHER that publishes the ROS Twist message with throttle and steering
 function moveActionPublisher(linear, angular) {
@@ -18,8 +22,21 @@ function moveActionPublisher(linear, angular) {
         twist.linear.x = 0;
         twist.angular.z = 0;
     }
+
     cmdVel.publish(twist);
 }
+
+// PUBLISHER that publishes the ROS Float64 message with the accessory rotation
+function accessoryMovePublisher(accessory) {
+    if(float64 !== undefined) {
+        float64.data = accessory;
+    } else {
+        float64.data = 0;
+    }
+
+    petAcc.publish(float64);
+}
+
 
 // ADVERTISER that initializes the publication to "/cmd_vel" topic
 function initVelocityPublisher() {
@@ -47,6 +64,25 @@ function initVelocityPublisher() {
     // Register publisher within ROS system
     cmdVel.advertise();
 }
+
+// ADVERTISER that initializes the publication to "/pet_accessory" topic
+function initAccessoryPublisher() {
+    // Initial values.
+    float64 = new ROSLIB.Message({
+        data: 0
+    });
+
+    // Init topic JS object
+    petAcc = new ROSLIB.Topic({
+        ros: ros,
+        name: '/pet_accessory',
+        messageType: 'std_msgs/Float64'
+    });
+
+    // Register publisher within ROS system
+    petAcc.advertise();
+}
+
 
 // Creates the joystick controller JS object from the nipplejs library
 function initJoystick() {
@@ -119,6 +155,16 @@ function initTeleopKeyboard() {
     }
 }
 
+// Creates the slider accessory controller JS object
+function initAccessorySlider() {
+    // Add a JS event listener for changes in the pet accessory slider
+    accSlider = document.getElementById("accessory");
+    accSlider.oninput = function () {
+        accessoryMovePublisher(accSlider.value / 100);
+    }
+}
+
+
 // MAIN
 window.onload = function () {
     // Determine Kit-Cat's address automatically (or set it manually)
@@ -130,6 +176,7 @@ window.onload = function () {
     });
 
     initVelocityPublisher();
+    initAccessoryPublisher();
 
     // Initialize handlers to start driving
     start = document.getElementById('start');
@@ -146,6 +193,7 @@ window.onload = function () {
         setTimeout(() => console.log("Starting controllers"), 1000);
         setTimeout(() => initJoystick(), 1200);
         setTimeout(() => initTeleopKeyboard(), 1200);
+        setTimeout(() => initAccessorySlider(), 1200);
     }
 
 }
