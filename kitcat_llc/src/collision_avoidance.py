@@ -9,7 +9,7 @@ DIST_ACTUATION      = 0.6 # Meters
 DIST_BRAKE          = DIST_ACTUATION / 3
 MIN_SENSOR_RANGE    = 0.2 + 0.001 # For float precision
 
-# Subscribes to topic "/kitkat/ultrasonic" and calculates a correction to Kit-Cat's movement in order to avoid a collision. Corrections are published to "/control/cmd_vel":
+# Subscribes to topic "/kitcat/ultrasonic" and calculates a correction to Kit-Cat's movement in order to avoid a collision. Corrections are published to "/control/cmd_vel":
 class CollisionAvoidance():
     def __init__(self):
         self.detected_range = 3 # Meters, default value 
