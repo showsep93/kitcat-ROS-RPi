@@ -19,7 +19,7 @@ class KitCatLowLevelCtrl():
         # Create an actuator dictionary
         self.actuators = {} 
         self.actuators['throttle']  = ServoConvert(id=1, center_value=270, range=60)
-        self.actuators['steering']  = ServoConvert(id=2, center_value=270, range=140, direction=1) # Positive sign is left
+        self.actuators['steering']  = ServoConvert(id=2, center_value=280, range=140, direction=1) # Positive sign is left
         self.actuators['accessory']  = ServoConvert(id=3, center_value=215, range=290, direction=-1)
         rospy.loginfo("Servo actuators correctly initialized")
 
@@ -90,15 +90,18 @@ class KitCatLowLevelCtrl():
 
     # Method that combines commands from the user and the ultrasonic sensor to obtains the self.throttle and self.steer attributes; finally it calls the function that will perform the conversion to PWM.
     def compose_movement(self):
-        # Only update throttle attribute if the car is receiving the order to move forward, otherwise stick to the user command.
+        # Update steer attribute
+        self.steer = self.steer_cmd
+
+        # Apply throttle deceleration in case the pet accessory is not in parking position, otherwise stick to the user command.
         if self.throttle_cmd > 0:
-            self.throttle = saturate(self.throttle_cmd, 0, 1) * self.throttle_avoid
+            if self.pet_acc != -1 and self.pet_acc != 1:
+                self.throttle = saturate(self.throttle_cmd, 0, 1) * self.throttle_avoid
+            else:
+                self.throttle = saturate(self.throttle_cmd, 0, 1)
         else:
             self.throttle = saturate(self.throttle_cmd, -1, 0)
 
-        # Update steer attribute
-        self.steer = self.steer_cmd
-        
         # Call the unitary range to PWM converter
         self.set_actuators_from_cmdvel(self.throttle, self.steer, self.pet_acc)
 
@@ -182,3 +185,4 @@ If this file is being imported from another module, __name__ will be set to the 
 if __name__ == "__main__":
     kitcat_llc = KitCatLowLevelCtrl()
     kitcat_llc.run()
+

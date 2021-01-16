@@ -44,8 +44,34 @@ reboot
 iwconfig
 
 
+=================================================================
+
+
+Create a script check_connection.sh
+
+#!/bin/bash
+
+ping -c4 www.google.com
+let a=$?
+if [ "$a" != "0" ]; then
+	/sbin/shutdown -r +1 Connection lost, rebooting...
+fi
+
+Change the permissions so it is executable:
+
+chmod +x check_connection.sh
+
+Edit /etc/crontab using sudo so that it launches the previous script every 30 minutes:
+
+sudo crontab -e
+
+And add this line:
+
+*/30 * * * * /home/ubuntu/check_connection.sh
+
 
 =================================================================
+
 
 sudo nano /etc/default/keyboard
 
