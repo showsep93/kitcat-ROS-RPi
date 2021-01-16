@@ -34,7 +34,7 @@ import time
 # Class for the HC-SR04 ultrasonic distance sensor
 class HC_SR04():
     # CONSTRUCTOR
-    def __init__(self, gpio_trigger, gpio_echo, range_min=10, range_max=400):        
+    def __init__(self, gpio_trigger, gpio_echo, range_min=2, range_max=450):        
         self._gpio_trigger  = gpio_trigger
         self._gpio_echo     = gpio_echo
         self._range_min     = range_min
@@ -44,8 +44,9 @@ class HC_SR04():
         # Time taken by the pulse is actually for going and return travels of the ultrasonic signals. Time is taken as Time/2 and therefore Distance = SoundSpeed/2 * Time
         self._sound_speed   = 17150.0 # SoundSpeed/2 in cm/s
 
+        # Timeout parameters
         self._last_time_reading = 0
-        self._timeout       = range_max/self._sound_speed
+        self._timeout       = range_max/self._sound_speed * 2
 
         # Mode referring to the pins by the "Broadcom SOC channel" number (GPIOXX)
         GPIO.setmode(GPIO.BCM)
@@ -75,10 +76,14 @@ class HC_SR04():
         # The sensor sets ECHO to high for the amount of time it takes for the pulse to go and come back, so the code measures the amount of time that the ECHO pin stays high. 
         while GPIO.input(self._gpio_echo)==0:
             pulse_start_time = time.time()
-            
+
         while GPIO.input(self._gpio_echo)==1:
             pulse_end_time = time.time()
-        # pulse_end_time = pulse_start_time+0.004
+            # Manual timeout
+            if time.time() - pulse_start_time > self._timeout:
+                print("Ultrasonic sensor TIMEOUT")
+                self._is_reading = False
+                return(-1)
         
         # Reading is finished
         self._last_time_reading = time.time()
@@ -91,9 +96,10 @@ class HC_SR04():
         # Adjust distance according to sensor range
         if distance > self._range_max:
             distance = self._range_max
+
         if distance < self._range_min:
             distance = self._range_min
-        
+
         return(distance)
 
 

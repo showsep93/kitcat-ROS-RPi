@@ -70,7 +70,7 @@ class ScanUltrasonic():
 
     # MAIN
     def run(self):
-        rate = rospy.Rate(10)
+        rate = rospy.Rate(5)
         
         rospy.loginfo("Running ultrasonic sensor...")
         while not rospy.is_shutdown():
@@ -86,7 +86,7 @@ if __name__ == "__main__":
     rospy.init_node('ultrasonic_sensor')
     rospy.loginfo("Setting up the \"ultrasonic_sensor\" node...")
 
-    ultrasonic_sensor = ScanUltrasonic(gpio_trigger=GPIO_TRIGGER, gpio_echo=GPIO_ECHO, range_min=0.2, range_max=3.5, effectual_angle_deg=15)
+    ultrasonic_sensor = ScanUltrasonic(gpio_trigger=GPIO_TRIGGER, gpio_echo=GPIO_ECHO, range_min=0.02, range_max=4.5, effectual_angle_deg=15)
     rospy.loginfo("Initialization for \"ultrasonic_sensor\" complete!")
     ultrasonic_sensor.run()        
 

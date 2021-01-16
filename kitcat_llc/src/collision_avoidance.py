@@ -7,7 +7,7 @@ from geometry_msgs.msg import Twist
 
 DIST_ACTUATION      = 0.6 # Meters
 DIST_BRAKE          = DIST_ACTUATION / 3
-MIN_SENSOR_RANGE    = 0.2 + 0.001 # For float precision
+MIN_SENSOR_RANGE    = 0.02 + 0.001 # For float precision
 
 # Subscribes to topic "/kitcat/ultrasonic" and calculates a correction to Kit-Cat's movement in order to avoid a collision. Corrections are published to "/control/cmd_vel":
 class CollisionAvoidance():
@@ -53,7 +53,7 @@ class CollisionAvoidance():
 
     # MAIN
     def run(self):
-        rate = rospy.Rate(5) # Runs faster than others
+        rate = rospy.Rate(5) # Hz
 
         while not rospy.is_shutdown():
             # Obtain the correction
