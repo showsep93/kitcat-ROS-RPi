@@ -66,22 +66,26 @@ class HC_SR04():
         self._is_reading = True
 
         # The sensor requires a short 10uS pulse to trigger the module, which will cause the sensor to start the ranging program (8 ultrasound bursts at 40 kHz) in order to obtain an echo response.
-        GPIO.output(self._gpio_trigger, GPIO.HIGH)
-        time.sleep(0.00001)
+        GPIO.output(self._gpio_trigger, GPIO.HIGH); time.sleep(0.00001)
         GPIO.output(self._gpio_trigger, GPIO.LOW)
-              
-        pulse_start_time = time.time()
+        
+        pulse_start_time = time0 = time.time()
         pulse_end_time = time.time()
 
         # The sensor sets ECHO to high for the amount of time it takes for the pulse to go and come back, so the code measures the amount of time that the ECHO pin stays high. 
         while GPIO.input(self._gpio_echo)==0:
             pulse_start_time = time.time()
+            # Manual timeout for when sensor's ECHO pin is not set to HIGH
+            if time.time() - time0 > self._timeout:
+                print("Ultrasonic sensor ECHO LOW TIMEOUT")
+                self._is_reading = False
+                return(-1)
 
         while GPIO.input(self._gpio_echo)==1:
             pulse_end_time = time.time()
-            # Manual timeout
+            # Manual timeout for when sensor's ECHO pin is never set back to LOW
             if time.time() - pulse_start_time > self._timeout:
-                print("Ultrasonic sensor TIMEOUT")
+                print("Ultrasonic sensor ECHO HIGH TIMEOUT")
                 self._is_reading = False
                 return(-1)
         
