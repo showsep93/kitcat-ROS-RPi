@@ -39,9 +39,9 @@ class CollisionAvoidance():
         correction = 1.0     
 
         # Apply total/progressive braking
-        if self.detected_range < DIST_BRAKE or self.detected_range <= MIN_SENSOR_RANGE:
+        if self.detected_range <= DIST_BRAKE and self.detected_range >= MIN_SENSOR_RANGE:
             correction = 0.0
-        elif self.detected_range < DIST_ACTUATION:
+        elif self.detected_range <= DIST_ACTUATION and self.detected_range >= MIN_SENSOR_RANGE:
             correction = self.detected_range / DIST_ACTUATION
             correction = saturate(correction, 0.0, 1.0)
 
