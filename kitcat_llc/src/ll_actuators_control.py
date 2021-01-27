@@ -18,7 +18,7 @@ class KitCatLowLevelCtrl():
 
         # Create an actuator dictionary
         self.actuators = {} 
-        self.actuators['throttle']  = ServoConvert(id=1, center_value=270, range=60)
+        self.actuators['throttle']  = ServoConvert(id=1, center_value=270, range=100)
         self.actuators['steering']  = ServoConvert(id=2, center_value=280, range=140, direction=1) # Positive sign is left
         self.actuators['accessory']  = ServoConvert(id=3, center_value=215, range=290, direction=-1)
         rospy.loginfo("Servo actuators correctly initialized")
