@@ -1,0 +1,6 @@
+<launch>
+
+<node pkg="kitcat_bms" name="charging_station" type="management" output="screen">
+</node>
+
+</launch>

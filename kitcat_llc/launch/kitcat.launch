@@ -5,6 +5,7 @@
   <include file="$(find raspicam_node)/launch/camerav2_640x480.launch"/>
   <include file="$(find rosbridge_server)/launch/rosbridge_websocket.launch"/>
   <include file="$(find web_video_server)/launch/kitcat_web_video_server.launch"/>
+  <include file="$(find kitcat_bms)/launch/charging.launch"/>
   
   <node pkg="kitcat_llc" name="kitcat_llc" type="ll_actuators_control.py" output="screen">
   </node>
