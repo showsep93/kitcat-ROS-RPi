@@ -29,6 +29,7 @@ int main (int argc, char** argv) {
     // Override the default ros sigint handler.
     signal(SIGINT, mySigintHandler);
 
+    // TODO: Read GPIOs
 
 	ros::spin();
     return 0;
