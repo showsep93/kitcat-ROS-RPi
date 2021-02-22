@@ -43,19 +43,17 @@ bool ChargingStation::isEscEnabled() {
 void ChargingStation::setEsc(bool state) {
     if (state != this->ESC) { // Toggle state
         digitalWrite(ESC_PIN, state);
-
         this->ESC = state;
-
-        if (this->ESC) {
+    }
+    
+    if (this->ESC) {
             ROS_INFO("ESC STATE set to ON");
-        } else {
+    } else {
             ROS_INFO("ESC STATE set to OFF");
-        }
     }
 }
 
 bool ChargingStation::areBatteriesCharging() {
-    // TODO: read GPIO to the private variable
     this->batteriesCharging = digitalRead(CHARGING_PIN);
 
     if (this->batteriesCharging) {
