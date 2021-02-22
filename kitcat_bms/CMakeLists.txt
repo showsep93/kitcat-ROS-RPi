@@ -122,6 +122,8 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/kitcat_bms.cpp
 # )
+add_library(charging_station src/charging_station.cpp)
+target_link_libraries(charging_station ${catkin_LIBRARIES} -lwiringPi)
 
 ## Add cmake target dependencies of the library
 ## as an example, code may need to be generated before libraries
@@ -132,6 +134,9 @@ include_directories(
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/kitcat_bms_node.cpp)
+add_executable(management src/management.cpp)
+target_link_libraries(management ${catkin_LIBRARIES})
+add_dependencies(management kitcat_bms_generate_messages_cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the

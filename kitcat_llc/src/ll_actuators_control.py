@@ -154,7 +154,8 @@ class KitCatLowLevelCtrl():
     def run(self):
         rate = rospy.Rate(5) # Hz
 
-        # When a subscriber is involved, node must go into an infinite loop until it receives a shutdown signal so that the published messages arrive. For ROS Python, rospy.spin() can be replaced by a while loop and regular processing will be done at a certain specified rate.
+        # When a subscriber is involved, node must go into an infinite loop until it receives a shutdown signal so that the published messages arrive.
+        # In this case, a while implementation has been chosen so that it can still do some work. If there was just a subscriber (plus its callback), rospy.spin() would have also been a good choice.
         while not rospy.is_shutdown():
             self.compose_movement()
 
