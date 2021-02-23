@@ -27,6 +27,8 @@ ChargingStation::ChargingStation() {
     pinMode(CHARGING_PIN, INPUT);
     ROS_INFO("CHARGING DETECTION pin has been set as INPUT");
     batteriesCharging = digitalRead(CHARGING_PIN);
+    
+    cout << "Charging Station initialized!" << endl;
 }
 
 
@@ -47,9 +49,9 @@ void ChargingStation::setEsc(bool state) {
     }
     
     if (this->ESC) {
-            ROS_INFO("ESC STATE set to ON");
+        ROS_INFO("ESC STATE set to ON");
     } else {
-            ROS_INFO("ESC STATE set to OFF");
+        ROS_INFO("ESC STATE set to OFF");
     }
 }
 
