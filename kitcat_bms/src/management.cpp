@@ -19,11 +19,13 @@ ChargingStation chargingStation;
 
 // ROS SIGINT HANDLER
 void mySigintHandler(int sig) {
+    std::cout << "Bye World!" << std::endl;
+
     // Always turn off the ESC before shutting down
     chargingStation.setEsc(false);
 
     // Do also what the default SIGINT handler does
-    std::cout << "Shutting down Charging Station components! Bye!" << std::endl;
+    ROS_INFO("Shutting down Charging Station components! Bye!");
     ros::shutdown();
 }
 
@@ -31,9 +33,10 @@ void mySigintHandler(int sig) {
 // CALLBACK FUNCTION
 void changeEscState (const kitcat_bms::esc::ConstPtr &msg) {
     bool escState = msg->state;
-    std::cout << "New ESC state: " << escState << std::endl;
-    // std::cout << "Hello World!" << std::endl;
     chargingStation.setEsc(escState);
+
+    string escStateMessage = "New ESC state: " + escState;
+    ROS_INFO(escStateMessage);
 }
 
 
@@ -74,11 +77,8 @@ int main (int argc, char** argv) {
      */
     ros::Publisher pub = nh.advertise<sensor_msgs::BatteryState>("/batteries", 1);
     sensor_msgs::BatteryState kitCatBattteries;
-    /*  uint8 POWER_SUPPLY_STATUS_CHARGING=1
-        uint8 POWER_SUPPLY_STATUS_NOT_CHARGING=3
-        uint8 POWER_SUPPLY_TECHNOLOGY_NICD = 5
-    */
-    kitCatBatteries.capacity = 1800.0; kitCatBatteries.power_supply_technology = 5; kitCatBattteries.power_supply_status = 3;
+    kitCatBatteries.capacity = 1800.0;
+    kitCatBatteries.power_supply_technology = POWER_SUPPLY_TECHNOLOGY_NICD;
 
     // === LOOP ===
     // ros::spin() would not return until the node has been shutdown, either through a call to ros::shutdown() or a Ctrl-C. As this would only allow the subscribers to work, the while ros::ok() plus ros::spinOnce() implementation has been chosen in order to also do some work, publish some messages, etc.
@@ -94,8 +94,6 @@ int main (int argc, char** argv) {
         ros::spinOnce(); // It will call all the callbacks waiting to be called at that point in time.
         rate.sleep();
     }
-
     
-
     return 0;
 }

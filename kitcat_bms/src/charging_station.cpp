@@ -4,9 +4,6 @@
 #include <wiringPi.h>
 #include <ros/ros.h>
 
-#define ESC_PIN 23
-#define CHARGING_PIN 22
-
 using namespace std;
 
 ChargingStation::ChargingStation() {
@@ -14,6 +11,7 @@ ChargingStation::ChargingStation() {
      * Initialize the wiringPi library using wiringPiSetupGpio.
      * This function will let us use the BCM pin numbering layout, which is the numbering system you will find in the official Raspberry Pi GPIO documentation.
      */
+    std::cout << "Hello World!" << std::endl;
     wiringPiSetupGpio();
 
     // Initialize the ESC STATE pin as OUTPUT and set it to LOW (OFF)
@@ -43,14 +41,13 @@ bool ChargingStation::isEscEnabled() {
 void ChargingStation::setEsc(bool state) {
     if (state != this->ESC) { // Toggle state
         digitalWrite(ESC_PIN, state);
-
         this->ESC = state;
-
-        if (this->ESC) {
-            ROS_INFO("ESC STATE set to ON");
-        } else {
-            ROS_INFO("ESC STATE set to OFF");
-        }
+    }
+    
+    if (this->ESC) {
+        ROS_INFO("ESC STATE set to ON");
+    } else {
+        ROS_INFO("ESC STATE set to OFF");
     }
 }
 
@@ -59,10 +56,9 @@ uint8_t ChargingStation::areBatteriesCharging() {
 
     if (this->batteriesCharging) {
         ROS_INFO("Kit-Cat is properly parked in the charging station!");
-        return 1; //CHARGING
+        return POWER_SUPPLY_STATUS_CHARGING; //CHARGING
     } else {
-        ROS_INFO("Kit-Cat is NOT parked, it must be driving around...");
-        return 3; //NOT CHARGING
+        ROS_INFO("Kit-Cat is NOT properly parked, it must be driving around...");
+        return POWER_SUPPLY_STATUS_NOT_CHARGING; //NOT CHARGING
     }
 }
-
