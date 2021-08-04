@@ -36,7 +36,7 @@ void changeEscState (const kitcat_bms::esc::ConstPtr &msg) {
     charStation.setEsc(escState);
 
     std::string escStateMessage = escState ? "ON" : "OFF"; escStateMessage = "New ESC state: " + escStateMessage;
-    ROS_INFO("%s\n", escStateMessage.c_str());
+    ROS_INFO("%s", escStateMessage.c_str());
 }
 
 

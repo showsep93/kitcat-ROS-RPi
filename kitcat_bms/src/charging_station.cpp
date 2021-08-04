@@ -4,8 +4,8 @@
 #include <wiringPi.h>
 #include <ros/ros.h>
 
-#define ESC_PIN 23
-#define CHARGING_PIN 22
+#define ESC_PIN 23          // Yellow wire
+#define CHARGING_PIN 22     // Purple wire
 
 ChargingStation::ChargingStation() {
     /**
