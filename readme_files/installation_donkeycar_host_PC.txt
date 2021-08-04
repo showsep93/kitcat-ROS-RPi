@@ -1,0 +1,65 @@
+IN UBUNTU 18.04:
+
+Install miniconda Python 3.8? (latest) 64 bit.
+
+wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+bash ./Miniconda3-latest-Linux-x86_64.sh
+
+
+Change to a dir you would like to use as the head of your projects.
+
+mkdir projects
+cd projects
+
+
+Get the latest donkeycar from Github.
+
+git clone https://github.com/autorope/donkeycar
+cd donkeycar
+git checkout master
+
+
+If this is not your first install, update Conda and remove old donkey.
+
+conda update -n base -c defaults conda
+conda env remove -n donkey
+
+Create the Python anaconda environment:
+
+conda create -n donkey
+conda create -n donkey python=3.7
+------------->RESTART TERMINAL
+conda env update donkey -f install/envs/ubuntu.yml
+------------->RESTART TERMINAL
+
+FINALLY:
+conda activate donkey
+pip install -e .[pc]
+donkey createcar --path ~/Documents/mycar
+
+
+
+
+========SOLVE DEPENDENCIES AND OTHER PROBLEMS WITH CONDA==========
+_____1
+The program 'pip' is currently not installed. You can install it by typing:
+sudo apt install python-pip
+sudo apt install python3-pip
+sudo python3 -m pip install --upgrade pip
+
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.5 1
+...
+---> ensure that python refers to python and python --version is 3.7
+...
+sudo pip3 install moviepy==2.0.0.dev2
+...
+
+_____2
+conda config --add channels conda-forge
+conda install conda-forge::conda-build
+
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.6 1
+sudo update-alternatives --install /usr/bin/python3 python3 /usr/bin/python3.7 2
+sudo rm /usr/bin/python3
+sudo ln -s python3.6 /usr/bin/python3

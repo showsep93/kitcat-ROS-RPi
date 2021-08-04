@@ -21,12 +21,12 @@ ChargingStation::ChargingStation() {
     ROS_INFO("ESC STATE pin has been set as OUTPUT");
     digitalWrite(ESC_PIN, LOW);
     ROS_INFO("ESC STATE set to OFF");
-    ESC = false;
+    this->ESC = false;
 
     // Initialize the CHARGING DETECTION pin as INPUT and read its value
     pinMode(CHARGING_PIN, INPUT);
     ROS_INFO("CHARGING DETECTION pin has been set as INPUT");
-    batteriesCharging = digitalRead(CHARGING_PIN);
+    this->batteriesCharging = digitalRead(CHARGING_PIN);
 }
 
 
@@ -54,16 +54,15 @@ void ChargingStation::setEsc(bool state) {
     }
 }
 
-bool ChargingStation::areBatteriesCharging() {
-    // TODO: read GPIO to the private variable
+uint8_t ChargingStation::areBatteriesCharging() {
     this->batteriesCharging = digitalRead(CHARGING_PIN);
 
     if (this->batteriesCharging) {
         ROS_INFO("Kit-Cat is properly parked in the charging station!");
+        return 1; //CHARGING
     } else {
         ROS_INFO("Kit-Cat is NOT parked, it must be driving around...");
+        return 3; //NOT CHARGING
     }
-
-    return this->batteriesCharging;
 }
 

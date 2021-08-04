@@ -1,0 +1,26 @@
+roscore
+roslaunch kitcat_llc kitcat.launch
+rosrun kitcat_teleop_twist_key kitcat_keyboard.py
+
+rostopic pub /test/topic std_msgs/String 'Hello World from PC' -r 1
+rostopic echo /test/topic
+
+rosnode list
+rosnode info /kitcat_llc
+rosnode ping /kitcat_llc
+rosnode machine
+
+rostopic list
+rostopic info /cmd_vel
+
+roswtf
+
+rosmsg show geometry_msgs/Twist
+
+rostopic pub /cmd_vel geometry_msgs/Twist
+rostopic echo /servos_absolute
+
+roscd
+
+rosrun rqt_graph rqt_graph
+

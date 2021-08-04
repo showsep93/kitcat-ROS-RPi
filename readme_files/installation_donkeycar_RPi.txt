@@ -1,0 +1,74 @@
+IN UBUNTU 16.04:
+
+sudo snap install rpi-imager
+rpi-imager
+------------> DEAD END installing it with rpi-imager, permissions problem.
+
+INSTALLING IT FROM COMMAND LINE:
+
+Unzip the .img downloaded
+
+sudo dd bs=4M if=/home/josep/Downloads/2020-02-13-raspbian-buster-lite.img of=/dev/mmcblk0 status=progress conv=fsync
+
+If boot is not visible right away, try unplugging and re-inserting the memory card reader.
+
+On the root of the boot partition:
+
+sudo touch wpa_supplicant.conf
+sudo gedit wpa_supplicant.conf
+
+Add:
+
+country=ES
+ctrl_interface=DIR=/var/run/wpa_supplicant GROUP=netdev
+update_config=1
+
+network={
+    ssid="MIWIFI_2G_rmpg"
+    psk="XXXXXXXXX"
+}
+
+Put a file named ssh in the root of your boot partition:
+sudo touch ssh
+
+
+On the rootfs partition:
+sudo gedit /etc/hosts
+sudo gedit /etc/hostname
+
+and change the name by 'donkeycarpi' or 'kitcatpi'.
+
+Extract the SD and put it in the RPi.
+
+
+Turn on by plugging it on to power.
+Follow Donkey documentation...
+
+
+IN THE RASPBERRY PI:
+--
+source env/bin/activate
+python mycar/manage.py drive
+--
+
+or
+
+IN THE HOST PC:
+--
+ssh pi@donkeycarpi.local or ssh pi@192.168.1.187
+python mycar/manage.py drive
+--
+
+Calibrate following Donkey documentation.
+Run after changes in myconfig.py:
+donkey createcar --path ~/mycar --overwrite
+
+
+Once "drive" have been executed:
+http://donkeycarpi.local:8887/ or 192.168.1.187:8887 (from phone)
+
+
+
+=======BACKUP RPI IMAGE========(it may need up to 16 GB)
+Insert the SD card into a Linux PC:
+sudo dd if=/dev/mmcblk0 of=/home/josep/Documents/Kit-Cat/back-ups/offical_donkeycar.img bs=1M

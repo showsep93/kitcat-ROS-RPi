@@ -12,19 +12,30 @@
 #include "charging_station.h" // Custom Class to manage the Kit-Cat's charging station
 
 
+// === CREATE AN INSTANCE OF THE CLASS CHARGING STATION ===
+ChargingStation chargingStation;
+// ========================================================
+
+
+// ROS SIGINT HANDLER
 void mySigintHandler(int sig) {
     // Always turn off the ESC before shutting down
-    // TODO: turn off the ESC by GPIO
+    chargingStation.setEsc(false);
 
     // Do also what the default SIGINT handler does
+    std::cout << "Shutting down Charging Station components! Bye!" << std::endl;
     ros::shutdown();
 }
 
+
+// CALLBACK FUNCTION
 void changeEscState (const kitcat_bms::esc::ConstPtr &msg) {
     bool escState = msg->state;
-    std::cout << "ESC state: " << escState << std::endl;
-    std::cout << "Hello World!" << std::endl;
+    std::cout << "New ESC state: " << escState << std::endl;
+    // std::cout << "Hello World!" << std::endl;
+    chargingStation.setEsc(escState);
 }
+
 
 int main (int argc, char** argv) {
     /**
@@ -63,16 +74,22 @@ int main (int argc, char** argv) {
      */
     ros::Publisher pub = nh.advertise<sensor_msgs::BatteryState>("/batteries", 1);
     sensor_msgs::BatteryState kitCatBattteries;
+    /*  uint8 POWER_SUPPLY_STATUS_CHARGING=1
+        uint8 POWER_SUPPLY_STATUS_NOT_CHARGING=3
+        uint8 POWER_SUPPLY_TECHNOLOGY_NICD = 5
+    */
+    kitCatBatteries.capacity = 1800.0; kitCatBatteries.power_supply_technology = 5; kitCatBattteries.power_supply_status = 3;
 
-
-
-    // === MAIN LOOP ===
+    // === LOOP ===
     // ros::spin() would not return until the node has been shutdown, either through a call to ros::shutdown() or a Ctrl-C. As this would only allow the subscribers to work, the while ros::ok() plus ros::spinOnce() implementation has been chosen in order to also do some work, publish some messages, etc.
     ros::Rate rate(1); // 1 Hz
     while (ros::ok()) {
 
-        // TODO: Read GPIOs
+        // Read and write GPIO for the battery state
+        kitCatBattteries.power_supply_status = chargingStation.areBatteriesCharging();
+        pub.publish(kitCatBattteries);
 
+        // ESC GPIO is updated by the callback function when a new ESC state is received from the subscription!
 
         ros::spinOnce(); // It will call all the callbacks waiting to be called at that point in time.
         rate.sleep();
