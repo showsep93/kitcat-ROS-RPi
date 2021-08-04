@@ -135,7 +135,7 @@ target_link_libraries(charging_station ${catkin_LIBRARIES} -lwiringPi)
 ## The recommended prefix ensures that target names across packages don't collide
 # add_executable(${PROJECT_NAME}_node src/kitcat_bms_node.cpp)
 add_executable(management src/management.cpp)
-target_link_libraries(management ${catkin_LIBRARIES})
+target_link_libraries(management charging_station ${catkin_LIBRARIES})
 add_dependencies(management kitcat_bms_generate_messages_cpp)
 
 ## Rename C++ executable without prefix

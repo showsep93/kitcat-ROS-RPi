@@ -4,7 +4,8 @@
 #include <wiringPi.h>
 #include <ros/ros.h>
 
-using namespace std;
+#define ESC_PIN 23
+#define CHARGING_PIN 22
 
 ChargingStation::ChargingStation() {
     /**
@@ -39,7 +40,8 @@ bool ChargingStation::isEscEnabled() {
 }
 
 void ChargingStation::setEsc(bool state) {
-    if (state != this->ESC) { // Toggle state
+    // Toggle state
+    if (state != this->ESC) {
         digitalWrite(ESC_PIN, state);
         this->ESC = state;
     }

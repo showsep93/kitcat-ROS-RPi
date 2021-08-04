@@ -1,9 +1,7 @@
-#ifndef CHARGING_STATION
-#define CHARGING_STATION
+#ifndef CHARGING_STATION_H
+#define CHARGING_STATION_H
 
-#define ESC_PIN 23
-#define CHARGING_PIN 22
-
+#include <stdint.h>
 const uint8_t POWER_SUPPLY_STATUS_CHARGING = 1;
 const uint8_t POWER_SUPPLY_STATUS_NOT_CHARGING = 3;
 const uint8_t POWER_SUPPLY_TECHNOLOGY_NICD = 5;
@@ -20,4 +18,4 @@ class ChargingStation {
         bool batteriesCharging;
 };
 
-#endif // CHARGING_STATION
+#endif // CHARGING_STATION_H

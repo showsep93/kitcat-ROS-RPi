@@ -7,22 +7,22 @@
 
 #include <ros/ros.h>
 #include <signal.h>
+#include <string>
 #include <kitcat_bms/esc.h> // Custom ROS message type for the ESC
 #include <sensor_msgs/BatteryState.h>
 #include "charging_station.h" // Custom Class to manage the Kit-Cat's charging station
 
 
-// === CREATE AN INSTANCE OF THE CLASS CHARGING STATION ===
-ChargingStation chargingStation;
-// ========================================================
-
+// === CREATE AN INSTANCE OF THE CLASS "CHARGING STATION" ===
+ChargingStation charStation;
+// ==========================================================
 
 // ROS SIGINT HANDLER
 void mySigintHandler(int sig) {
     std::cout << "Bye World!" << std::endl;
 
     // Always turn off the ESC before shutting down
-    chargingStation.setEsc(false);
+    charStation.setEsc(false);
 
     // Do also what the default SIGINT handler does
     ROS_INFO("Shutting down Charging Station components! Bye!");
@@ -33,10 +33,10 @@ void mySigintHandler(int sig) {
 // CALLBACK FUNCTION
 void changeEscState (const kitcat_bms::esc::ConstPtr &msg) {
     bool escState = msg->state;
-    chargingStation.setEsc(escState);
+    charStation.setEsc(escState);
 
-    string escStateMessage = "New ESC state: " + escState;
-    ROS_INFO(escStateMessage);
+    std::string escStateMessage = escState ? "ON" : "OFF"; escStateMessage = "New ESC state: " + escStateMessage;
+    ROS_INFO("%s\n", escStateMessage.c_str());
 }
 
 
@@ -76,7 +76,7 @@ int main (int argc, char** argv) {
      * The second parameter to advertise() is the size of the message queue used for publishing messages. If messages are published more quickly than we can send them, the number here specifies how many messages to buffer up before throwing some away.
      */
     ros::Publisher pub = nh.advertise<sensor_msgs::BatteryState>("/batteries", 1);
-    sensor_msgs::BatteryState kitCatBattteries;
+    sensor_msgs::BatteryState kitCatBatteries;
     kitCatBatteries.capacity = 1800.0;
     kitCatBatteries.power_supply_technology = POWER_SUPPLY_TECHNOLOGY_NICD;
 
@@ -86,8 +86,8 @@ int main (int argc, char** argv) {
     while (ros::ok()) {
 
         // Read and write GPIO for the battery state
-        kitCatBattteries.power_supply_status = chargingStation.areBatteriesCharging();
-        pub.publish(kitCatBattteries);
+        kitCatBatteries.power_supply_status = charStation.areBatteriesCharging();
+        pub.publish(kitCatBatteries);
 
         // ESC GPIO is updated by the callback function when a new ESC state is received from the subscription!
 
