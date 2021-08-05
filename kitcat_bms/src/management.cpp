@@ -77,7 +77,7 @@ int main (int argc, char** argv) {
      */
     ros::Publisher pub = nh.advertise<sensor_msgs::BatteryState>("/batteries", 1);
     sensor_msgs::BatteryState kitCatBatteries;
-    kitCatBatteries.capacity = 1800.0;
+    kitCatBatteries.capacity = 1600.0;
     kitCatBatteries.power_supply_technology = POWER_SUPPLY_TECHNOLOGY_NICD;
 
     // === LOOP ===

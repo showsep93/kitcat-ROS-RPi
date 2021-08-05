@@ -15,12 +15,12 @@ ChargingStation::ChargingStation() {
     std::cout << "Hello World!" << std::endl;
     wiringPiSetupGpio();
 
-    // Initialize the ESC STATE pin as OUTPUT and set it to LOW (OFF)
+    // Initialize the ESC STATE pin as OUTPUT and set it to HIGH (ON)
     pinMode(ESC_PIN, OUTPUT);
     ROS_INFO("ESC STATE pin has been set as OUTPUT");
-    digitalWrite(ESC_PIN, LOW);
-    ROS_INFO("ESC STATE set to OFF");
-    this->ESC = false;
+    digitalWrite(ESC_PIN, HIGH);
+    ROS_INFO("ESC STATE set to ON");
+    this->ESC = true;
 
     // Initialize the CHARGING DETECTION pin as INPUT and read its value
     pinMode(CHARGING_PIN, INPUT);
